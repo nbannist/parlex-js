@@ -1,0 +1,20 @@
+@charset "utf-8"; /* Must be first if used */
+/**
+ * Styles for HTML test pages.
+ */
+ 
+ /* NAVigation styles 
+    -------------------------------------------- */
+ /* Get rid of the underline for the links */
+ nav a {
+	 text-decoration: none;
+ }
+ /* Use the after pseudo -element and content property to add delimiters inbetween the links. */
+ nav a:after {
+	 content: " \00BB";
+	 color: #333;
+ }
+ /* clear the psuedo-element's content if the a element is the last in the group. */
+ nav a:last-child:after {
+	 content: "";
+ }

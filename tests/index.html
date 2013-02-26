@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Tests for parlex-js</title>
+	<link rel="stylesheet" href="qunit/qunit.css">
+</head>
+<body>
+	<h1>Tests for parlex-js</h1>
+	<form>
+		<input type="button" value="Run Tests" id="run-tests-btn" />
+	</form>
+	<!-- qunit output element -->
+	<div id="qunit"></div>
+
+	<script src="qunit/qunit.js"></script>
+	<script src="../src/StringStateMachine.js"></script>
+	<script>
+	/**
+	 * Setup for tests.
+	 */
+	var runTestsButton = document.getElementById('run-tests-btn');
+	runTestsButton.onclick = function (e) {
+		runTests();
+		
+	};
+	
+	function runTests() {
+		var stateFunc = {
+			init: function (machine) {
+				console.log('init');
+				return "firstState";
+			},
+			firstState: function (machine) {
+				console.log('FirstState Function');
+				return "secondState";
+			},
+			secondState: function (machine) {
+				console.log('SecondState Function');
+				return "lastState";
+			},
+			lastState: function (machine) {
+				console.log('lastState Function');
+				return null;
+			}
+		};
+
+		document.addEventListener('beforeInvocation.init', function(e) { console.dir(e); });
+		document.addEventListener('afterInvocation.lastState', function(e) { console.dir(e); });
+			
+		var options = {
+			stateFunctions: stateFunc,
+			input: "something",
+			itemTypes: {},
+			parser: null
+		};
+		
+		// .. setup and run the qunit tests for this 
+		console.log('Qunit Tests Begin');
+	    test("Tests", function() {
+			// tests....
+	    	equal(true, true, "QUnit was successfully installed.");
+			var lexer = new StringStateMachine();
+			
+			// -------------------------------
+			equal(lexer.set("input","The Original String"), true, "set(\"input\") was successful.");
+			equal(lexer.set("stateFunctions", {"init": function() {}}), true, "set(\"stateFunctions\") was successful.");
+			equal(lexer.set("parser", {}), true, "set(\"parser\") was successful.");
+			equal(lexer.set("itemTypes", {}), true, "set(\"itemTypes\") was successful.");
+			
+			// ---------
+			// set Input String
+			equal(lexer.setInput("The Original String"), true, "setInput was successful.");
+			equal(lexer.setInput(), false, "setInput should fail");
+			equal(lexer.input, "The Original String", "The Original String");
+			equal(lexer.setInput(undefined), false, "setInput should fail");
+			equal(lexer.input, "The Original String", "The Original String");
+			equal(lexer.setInput(null), false, "setInput should fail");
+			equal(lexer.input, "The Original String", "The Original String");
+			equal(lexer.setInput([]), false, "setInput should fail");
+			equal(lexer.input, "The Original String", "The Original String");
+			equal(lexer.setInput({}), false, "setInput should fail");
+			equal(lexer.input, "The Original String", "The Original String");
+			equal(lexer.setInput(34), false, "setInput should fail");
+			equal(lexer.input, "The Original String", "The Original String");
+			equal(lexer.setInput(""), false, "setInput should fail");
+			equal(lexer.input, "The Original String", "The Original String");
+			equal(lexer.setInput("A new string."), true, "setInput should succeed.");
+			equal(lexer.input, "A new string.", "A new string.");
+			
+			// StateFunctions
+			equal(lexer.setStateFunctions(options.stateFunctions), true, "setStateFunctions: Success");
+			equal(lexer.setStateFunctions({}), false, "setStateFunctions: {} Fails");
+			equal(lexer.setStateFunctions([]), false, "setStateFunctions: [] Fails");
+			equal(lexer.setStateFunctions("The Original String"), false, "setStateFunctions: 'The Original String' Fails");
+			equal(lexer.setStateFunctions(options.stateFunctions), true, "setStateFunctions: Success");
+			
+			// Parser
+			equal(lexer.setParser(options.parser), true, "setParser: null: true.");
+			equal(lexer.setParser(null), true, "setParser: null: true.");
+			equal(lexer.setParser(undefined), true, "setParser: undefined: true.");
+			equal(lexer.setParser({}), true, "setParser: {}: true.");
+			equal(lexer.setParser([]), true, "setParser: []: true.");
+			equal(lexer.setParser(""), false, "setParser: \"\": fail.");
+			equal(lexer.setParser("something"), false, "setParser: \"something\": fail.");
+			
+			// ItemTypes
+			equal(lexer.setItemTypes(options.itemTypes), true, "setItemTypes(options.itemTypes): {}");
+			equal(lexer.setItemTypes({}), true, "setItemTypes: {}");
+			equal(lexer.setItemTypes([]), true, "setItemTypes: []");
+			equal(lexer.setItemTypes(""), false, "setItemTypes: <string>");
+			// ---------
+			
+			// --------- 
+			equal(lexer.checkStateFunctions(options.stateFunctions), true, "options.stateFunctions is ok");
+			equal(lexer.checkStateFunctions(options.itemTypes), false, "options.itemTypes is not ok");
+			equal(lexer.checkStateFunctions([]), false, "[] is not ok");
+			equal(lexer.checkStateFunctions({}), false, "{} is not ok");
+			equal(lexer.checkStateFunctions({init: 95}), false, "{init: 95} is not ok");
+			equal(lexer.checkStateFunctions({init: function () {}, state1: function () {}, state2: null}), true, "{init: function () {}, state1: function () {}, state2: null} is ok");
+			// --------- 
+			
+			
+			
+			lexer.run();
+	    });
+		console.log('Qunit Tests Finished.');
+	}
+	</script>
+</body>
+</html>
