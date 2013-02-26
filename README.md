@@ -36,9 +36,9 @@ Machines will have methods that execute when each part is finished. Need to have
 
 Pre-Alpha
  * 2013.02.22_01 - Initial Submission; Just a README.md (this file)
- * 2013.02.24_01 - Added:
+ * 2013.02.25_01 - Added:
     - Quint (unit testing)
-    - Skeleton of the StringStateMachine object with some helper functions (No State Function helpers yet).
+    - Skeleton of the StringStateMachine object with some helper functions (No State Function helpers yet). Mostly init and setup helper functions.
 	- Added Custom Events to fire before and after each state function has run (this will be an option later).
 
 
